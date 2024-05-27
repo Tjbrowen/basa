@@ -1,8 +1,9 @@
 import Image from 'next/image'
 import Container from './components/Container'
 import HomeBanner from './components/HomeBanner'
-import { products } from '@/utils/product'
 import { truncateText } from '@/utils/truncateText'
+import ProductCard from './components/products/ProductCard'
+import { products } from '@/utils/proucts'
 
 export default function Home() {
   return<div className='p-8'>
@@ -17,7 +18,7 @@ export default function Home() {
         2xl:grid-cols-6
         gap-8'> 
           {products.map((product: any) => {
-            return <div>{truncateText(product.name)}</div>
+            return <ProductCard data={product} />
           })}
         </div>
      </Container>
