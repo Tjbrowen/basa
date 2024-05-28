@@ -1,6 +1,8 @@
 'use client'
 
+import Button from "@/app/components/Button";
 import SetColors from "@/app/components/products/SetColor";
+import SetQuatity from "@/app/components/products/SetQuantity";
 import { Rating } from "@mui/material";
 import { useCallback, useState } from "react";
 
@@ -54,7 +56,28 @@ const handleColorSelect = useCallback ((value:
         setCartProduct((prev) => {
             return {...prev, selectedImg: value}
         })
-    }, [cartProduct.selectedImg])
+    }, [cartProduct.selectedImg]);
+
+    const handleQtyIncrease = useCallback(() =>{
+
+        if(cartProduct.quantity === 50){
+            return;
+        }
+        setCartProduct((prev) => {
+            return {...prev, quantity: ++prev.quantity}
+        })
+    }, [cartProduct]);
+   
+    const handleQtyDecrease = useCallback(() =>{
+
+        if(cartProduct.quantity === 1){
+            return;
+        }
+
+        setCartProduct((prev) => {
+            return {...prev, quantity: --prev.quantity}
+        }) 
+    }, [cartProduct]);
 
     return <div className="
     grid grid-cols-1
@@ -103,9 +126,18 @@ const handleColorSelect = useCallback ((value:
              handleColorSelect={handleColorSelect}
              />
              <Horizontal/>
-             <div>quantity</div>
+            <SetQuatity
+            cartProduct={cartProduct}
+            handleQtyIncrease={handleQtyIncrease}
+            handleQtyDecrease={handleQtyDecrease}
+            />
              <Horizontal/>
-             <div>add to cart</div>
+             <div className="max-w-[300px]">
+                <Button
+                label="Add To Cart"
+                onClick={() =>{}}
+                />
+             </div>
         </div>
         </div>;
 }
