@@ -1,16 +1,61 @@
 'use client'
 
+import SetColors from "@/app/components/products/SetColor";
 import { Rating } from "@mui/material";
+import { useCallback, useState } from "react";
 
 interface ProductDetailsProps{
     product: any
 }
 
+export type CartProductType ={
+    id: string,
+    name: string,
+    description: string,
+    category: string,
+    brand: string,
+    selectedImg: SelectedImgType
+    quantity: number,
+    price: number
+}
+
+export type SelectedImgType = {
+    color: string,
+    colorCode: string,
+    image: string
+}
+
+const Horizontal = () => {
+        return <hr className="w-[30%] my-2"/>
+}
 const ProductDetails: React.FC<ProductDetailsProps> = ({product}) => {
 
+  const [cartProduct, setCartProduct] = 
+  useState<CartProductType> ({
+
+    id: product.id,
+    name: product.name,
+    description: product.description,
+    category: product.category,
+    brand: product.brand,
+    selectedImg: {...product.images[0]},
+    quantity: 1,
+    price: product.price,
+
+  })
+
+  console.log(cartProduct)
     
       const productRanting = product.reviews.reduce ((acc:number,
         item:any) => item.rating + acc, 0) /product.reviews.length
+
+const handleColorSelect = useCallback ((value:
+    SelectedImgType) => {
+        setCartProduct((prev) => {
+            return {...prev, selectedImg: value}
+        })
+    }, [cartProduct.selectedImg])
+
     return <div className="
     grid grid-cols-1
     md:grid-cols-2
@@ -29,7 +74,38 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({product}) => {
                 <Rating value={productRanting} readOnly/>
                 <div>{product.reviews.length} reviews</div>
              </div>
-             <div>{product.description}</div>
+
+             <Horizontal/>
+             <div className="text-justify">{product.description}</div>
+
+             <Horizontal/>
+             <div className="">
+          
+          <span className="font-semibold">Category: </span>
+          {product.category}
+          
+         </div>
+
+         <div>
+         <span className="font-semibold">Brand:    </span>
+          {product.brand}
+       
+         </div>
+             <div className={product.inStock ?
+                "text-teal-400" : "text-rose-400"}>
+             {product.inStock ? 'In stock' : 'Out of stock'}
+             </div>
+
+             <Horizontal/>
+             <SetColors
+             cartProduct={cartProduct}
+             images={product.images}
+             handleColorSelect={handleColorSelect}
+             />
+             <Horizontal/>
+             <div>quantity</div>
+             <Horizontal/>
+             <div>add to cart</div>
         </div>
         </div>;
 }

@@ -34,7 +34,7 @@ const Footer = () => {
            we are dedicated to providing the latesy 
            and greatest devices and accessories to our customers. 
            with a wide selection of accessories. </p>
-           <p>&copy; {new Date().getFullYear()} Basa. All rights reserved</p>
+           <p>&copy; {new Date().getFullYear()} Boulotoes. All rights reserved</p>
             </div>
             <FooterList>
             <h3 className=" text-base font-bold mb-2">Follow Us</h3>

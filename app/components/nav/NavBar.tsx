@@ -26,9 +26,11 @@ const NavBar = () => {
     md:gap-0
     text-slate-200
     ">
-    <Link href="/" className={`${redressed.className} font-bold text-2xl`}>
-    <Image src="/logo.png" alt="Logo" width={80} height={80} />
+<Link href="/" className={`${redressed.className} font-bold text-2xl`}>
+    <Image src="/logo.png" alt="Logo" width={80} height={"80"} />
 </Link>
+
+
 
 
         <div className="hidden md:block">Search</div>
