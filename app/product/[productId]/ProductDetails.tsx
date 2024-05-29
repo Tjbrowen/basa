@@ -1,6 +1,7 @@
 'use client'
 
 import Button from "@/app/components/Button";
+import ProductImage from "@/app/components/products/ProductImage";
 import SetColors from "@/app/components/products/SetColor";
 import SetQuatity from "@/app/components/products/SetQuantity";
 import { Rating } from "@mui/material";
@@ -86,7 +87,9 @@ const handleColorSelect = useCallback ((value:
     ">
         
         <div>
-            Images
+          <ProductImage cartProduct={cartProduct}
+          product={product} handleColorSelect={handleColorSelect}
+          />
         </div>
         <div className="flex flex-col gap-1
         text-slate-500 text-sm
