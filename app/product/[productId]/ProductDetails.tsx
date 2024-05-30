@@ -47,7 +47,7 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({product}) => {
 
   })
 
-  console.log(cartProduct)
+
     
       const productRanting = product.reviews.reduce ((acc:number,
         item:any) => item.rating + acc, 0) /product.reviews.length
