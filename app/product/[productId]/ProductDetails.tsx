@@ -4,8 +4,10 @@ import Button from "@/app/components/Button";
 import ProductImage from "@/app/components/products/ProductImage";
 import SetColors from "@/app/components/products/SetColor";
 import SetQuatity from "@/app/components/products/SetQuantity";
+import { useCart } from "@/hooks/useCart";
 import { Rating } from "@mui/material";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import { MdCheckCircle } from "react-icons/md";
 
 interface ProductDetailsProps{
     product: any
@@ -32,7 +34,8 @@ const Horizontal = () => {
         return <hr className="w-[30%] my-2"/>
 }
 const ProductDetails: React.FC<ProductDetailsProps> = ({product}) => {
-
+const {handleAddProductToCart, cartProducts} = useCart()
+const [isProductInCart, setIsProductInCart] = useState(false)
   const [cartProduct, setCartProduct] = 
   useState<CartProductType> ({
 
@@ -47,7 +50,16 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({product}) => {
 
   })
 
+ useEffect(() => {
+    setIsProductInCart(false)
 
+    if(cartProducts){
+        const existingIndex = cartProducts.findIndex((item) => item.id === product.id )
+        if(existingIndex > -1){
+            setIsProductInCart(true);
+        }
+    }
+ }, [cartProducts])
     
       const productRanting = product.reviews.reduce ((acc:number,
         item:any) => item.rating + acc, 0) /product.reviews.length
@@ -123,6 +135,18 @@ const handleColorSelect = useCallback ((value:
              </div>
 
              <Horizontal/>
+             {isProductInCart ? (<>
+             
+             <p className="mb-2 text-slate-500 flex items-center gap-1">
+             <MdCheckCircle className="text-teal-400" size={20}/> 
+            <span>Product added to cart</span>
+             </p>
+             
+             </> 
+             ):(
+             
+             <>
+             
              <SetColors
              cartProduct={cartProduct}
              images={product.images}
@@ -130,17 +154,19 @@ const handleColorSelect = useCallback ((value:
              />
              <Horizontal/>
             <SetQuatity
-            cartProduct={cartProduct}
-            handleQtyIncrease={handleQtyIncrease}
-            handleQtyDecrease={handleQtyDecrease}
-            />
+                cartProduct={cartProduct}
+                handleQtyIncrease={handleQtyIncrease}
+                handleQtyDecrease={handleQtyDecrease} cartCounter={false}            />
              <Horizontal/>
              <div className="max-w-[300px]">
                 <Button
                 label="Add To Cart"
-                onClick={() =>{}}
+                onClick={() => handleAddProductToCart(cartProduct )}
                 />
              </div>
+             
+             </>)}
+             
         </div>
         </div>;
 }
