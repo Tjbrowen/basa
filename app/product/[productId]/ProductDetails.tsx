@@ -6,6 +6,7 @@ import SetColors from "@/app/components/products/SetColor";
 import SetQuatity from "@/app/components/products/SetQuantity";
 import { useCart } from "@/hooks/useCart";
 import { Rating } from "@mui/material";
+import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import { MdCheckCircle } from "react-icons/md";
 
@@ -48,7 +49,8 @@ const [isProductInCart, setIsProductInCart] = useState(false)
     quantity: 1,
     price: product.price,
 
-  })
+  });
+  const router = useRouter()
 
  useEffect(() => {
     setIsProductInCart(false)
@@ -141,7 +143,11 @@ const handleColorSelect = useCallback ((value:
              <MdCheckCircle className="text-teal-400" size={20}/> 
             <span>Product added to cart</span>
              </p>
-             
+             <div className="max-w-[300px]">
+                <Button label="View Cart" outline onClick={() =>{
+                    router.push("/cart");
+                }}/>
+             </div>
              </> 
              ):(
              
