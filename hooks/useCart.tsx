@@ -1,13 +1,13 @@
 import { CartProductType } from "@/app/product/[productId]/ProductDetails";
 import { createContext, useCallback, useContext, useEffect, useState } from "react";
-import  { toast } from "react-hot-toast";
-
+import { toast } from "react-hot-toast";
 
 // Define the CartContextType
 type CartContextType = {
   cartTotalQty: number;
   cartProducts: CartProductType[] | null;
   handleAddProductToCart: (product: CartProductType) => void;
+  handleRemoveProductFromCart: (product: CartProductType) => void;
 };
 
 // Create the CartContext with a default value
@@ -42,7 +42,7 @@ export const CartContextProvider = (props: Props) => {
       } else {
         updatedCart = [product];
       }
-       toast.success("Product added to cart")
+      toast.success("Product added to cart");
       localStorage.setItem("eShopCartItems", JSON.stringify(updatedCart));
 
       // Update the total quantity of items in the cart
@@ -53,21 +53,27 @@ export const CartContextProvider = (props: Props) => {
     });
   }, []);
 
-  const handleRemoveProductFromCart = useCallback((
-    product: CartContextType
-  ) =>{
-    if(cartProducts){
-      const filteredProducts = cartProducts.filter
-      ((item)=> {
-        return item.id 
-      })
-    }
-  }, [cartProducts])
+  const handleRemoveProductFromCart = useCallback((product: CartProductType) => {
+    setCartProducts((prev) => {
+      if (!prev) return prev;
+
+      const updatedCart = prev.filter((item) => item.id !== product.id);
+      toast.success("Product removed from cart");
+      localStorage.setItem("eShopCartItems", JSON.stringify(updatedCart));
+
+      // Update the total quantity of items in the cart
+      const totalQty = updatedCart.reduce((total, item) => total + item.quantity, 0);
+      setCartTotalQty(totalQty);
+
+      return updatedCart;
+    });
+  }, []);
 
   const value = {
     cartTotalQty,
     cartProducts,
     handleAddProductToCart,
+    handleRemoveProductFromCart,
   };
 
   return <CartContext.Provider value={value} {...props} />;
