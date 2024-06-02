@@ -53,6 +53,17 @@ export const CartContextProvider = (props: Props) => {
     });
   }, []);
 
+  const handleRemoveProductFromCart = useCallback((
+    product: CartContextType
+  ) =>{
+    if(cartProducts){
+      const filteredProducts = cartProducts.filter
+      ((item)=> {
+        return item.id 
+      })
+    }
+  }, [cartProducts])
+
   const value = {
     cartTotalQty,
     cartProducts,
