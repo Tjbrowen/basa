@@ -1,5 +1,11 @@
 import { CartProductType } from "@/app/product/[productId]/ProductDetails";
-import { createContext, useCallback, useContext, useEffect, useState } from "react";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 import { toast } from "react-hot-toast";
 
 // Define the CartContextType
@@ -23,10 +29,12 @@ interface Props {
 export const CartContextProvider = (props: Props) => {
   const [cartTotalQty, setCartTotalQty] = useState(0);
   const [cartTotalAmount, setCartTotalAmount] = useState(0);
-  const [cartProducts, setCartProducts] = useState<CartProductType[] | null>(null);
+  const [cartProducts, setCartProducts] = useState<CartProductType[] | null>(
+    null
+  );
 
-  console.log('qty', cartTotalQty);
-  console.log('amount', cartTotalAmount);
+  console.log("qty", cartTotalQty);
+  console.log("amount", cartTotalAmount);
 
   useEffect(() => {
     const cartItems = localStorage.getItem("eShopCartItems");
@@ -90,24 +98,29 @@ export const CartContextProvider = (props: Props) => {
     });
   }, []);
 
-  const handleRemoveProductFromCart = useCallback((product: CartProductType) => {
-    setCartProducts((prev) => {
-      if (!prev) return prev;
+  const handleRemoveProductFromCart = useCallback(
+    (product: CartProductType) => {
+      setCartProducts((prev) => {
+        if (!prev) return prev;
 
-      const updatedCart = prev.filter((item) => item.id != product.id);
-      toast.success("Product removed from cart");
-      localStorage.setItem("eShopCartItems", JSON.stringify(updatedCart));
+        const updatedCart = prev.filter((item) => item.id != product.id);
+        toast.success("Product removed from cart");
+        localStorage.setItem("eShopCartItems", JSON.stringify(updatedCart));
 
-      return updatedCart;
-    });
-  }, []);
+        return updatedCart;
+      });
+    },
+    []
+  );
 
   const handleCartQtyIncrease = useCallback((product: CartProductType) => {
     setCartProducts((prev) => {
       if (!prev) return prev;
 
       let updatedCart = [...prev];
-      const existingIndex = updatedCart.findIndex((item) => item.id === product.id);
+      const existingIndex = updatedCart.findIndex(
+        (item) => item.id === product.id
+      );
 
       if (existingIndex > -1 && updatedCart[existingIndex].quantity < 99) {
         updatedCart[existingIndex].quantity += 1;
@@ -127,7 +140,9 @@ export const CartContextProvider = (props: Props) => {
       if (!prev) return prev;
 
       let updatedCart = [...prev];
-      const existingIndex = updatedCart.findIndex((item) => item.id === product.id);
+      const existingIndex = updatedCart.findIndex(
+        (item) => item.id === product.id
+      );
 
       if (existingIndex > -1 && updatedCart[existingIndex].quantity > 1) {
         updatedCart[existingIndex].quantity -= 1;
