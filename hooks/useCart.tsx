@@ -16,7 +16,6 @@ type CartContextType = {
   handleAddProductToCart: (product: CartProductType) => void;
   handleRemoveProductFromCart: (product: CartProductType) => void;
   handleCartQtyIncrease: (product: CartProductType) => void;
-  handleCartQtyDecrease: (product: CartProductType) => void;
 };
 
 // Create the CartContext with a default value
@@ -113,49 +112,27 @@ export const CartContextProvider = (props: Props) => {
     []
   );
 
-  const handleCartQtyIncrease = useCallback((product: CartProductType) => {
-    setCartProducts((prev) => {
-      if (!prev) return prev;
-
-      let updatedCart = [...prev];
-      const existingIndex = updatedCart.findIndex(
-        (item) => item.id === product.id
-      );
-
-      if (existingIndex > -1 && updatedCart[existingIndex].quantity < 99) {
-        updatedCart[existingIndex].quantity += 1;
-        toast.success("Product quantity increased");
-        localStorage.setItem("eShopCartItems", JSON.stringify(updatedCart));
-        return updatedCart;
-      } else if (existingIndex > -1) {
-        toast.error("Maximum quantity reached");
+  const handleCartQtyIncrease = useCallback(
+    (product: CartProductType) => {
+      let updatedCart;
+      if (product.quantity === 99) {
+        return toast.error("Maximum reached");
       }
+      if (cartProducts) {
+        updatedCart = [...cartProducts];
 
-      return prev;
-    });
-  }, []);
-
-  const handleCartQtyDecrease = useCallback((product: CartProductType) => {
-    setCartProducts((prev) => {
-      if (!prev) return prev;
-
-      let updatedCart = [...prev];
-      const existingIndex = updatedCart.findIndex(
-        (item) => item.id === product.id
-      );
-
-      if (existingIndex > -1 && updatedCart[existingIndex].quantity > 1) {
-        updatedCart[existingIndex].quantity -= 1;
-        toast.success("Product quantity decreased");
-        localStorage.setItem("eShopCartItems", JSON.stringify(updatedCart));
-        return updatedCart;
-      } else if (existingIndex > -1) {
-        toast.error("Minimum quantity reached");
+        const existingIndex = cartProducts.findIndex(
+          (item) => item.id === product.id
+        );
+        if (existingIndex > -1) {
+          updatedCart[existingIndex].quantity = ++updatedCart[existingIndex]
+            .quantity;
+        }
+        setCartProducts(updatedCart);
       }
-
-      return prev;
-    });
-  }, []);
+    },
+    [cartProducts]
+  );
 
   const value = {
     cartTotalQty,
@@ -164,7 +141,6 @@ export const CartContextProvider = (props: Props) => {
     handleAddProductToCart,
     handleRemoveProductFromCart,
     handleCartQtyIncrease,
-    handleCartQtyDecrease,
   };
 
   return <CartContext.Provider value={value} {...props} />;
