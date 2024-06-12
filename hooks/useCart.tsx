@@ -23,24 +23,29 @@ type CartContextType = {
 export const CartContext = createContext<CartContextType | null>(null);
 
 interface Props {
-  [propName: string]: any;
+  children: React.ReactNode;
 }
 
-export const CartContextProvider = (props: Props) => {
+export const CartContextProvider = ({ children }: Props) => {
   const [cartTotalQty, setCartTotalQty] = useState(0);
   const [cartTotalAmount, setCartTotalAmount] = useState(0);
   const [cartProducts, setCartProducts] = useState<CartProductType[] | null>(
     null
   );
+  const [showAddToast, setShowAddToast] = useState(false);
+  const [showRemoveToast, setShowRemoveToast] = useState(false);
 
   useEffect(() => {
     const cartItems = localStorage.getItem("eShopCartItems");
     if (cartItems) {
       const parsedCartProducts: CartProductType[] = JSON.parse(cartItems);
       setCartProducts(parsedCartProducts);
+    }
+  }, []);
 
-      // Calculate the total quantity and amount of items in the cart
-      const { totalQty, totalAmount } = parsedCartProducts.reduce(
+  useEffect(() => {
+    if (cartProducts) {
+      const { totalQty, totalAmount } = cartProducts.reduce(
         (acc, product) => {
           acc.totalQty += product.quantity;
           acc.totalAmount += product.price * product.quantity;
@@ -48,32 +53,30 @@ export const CartContextProvider = (props: Props) => {
         },
         { totalQty: 0, totalAmount: 0 }
       );
-
-      setCartTotalQty(totalQty);
-      setCartTotalAmount(totalAmount);
-    }
-  }, []);
-
-  useEffect(() => {
-    if (cartProducts) {
-      const totalQty = cartProducts.reduce(
-        (acc, product) => acc + product.quantity,
-        0
-      );
-      const totalAmount = cartProducts.reduce(
-        (acc, product) => acc + product.price * product.quantity,
-        0
-      );
       setCartTotalQty(totalQty);
       setCartTotalAmount(totalAmount);
     }
   }, [cartProducts]);
 
+  useEffect(() => {
+    if (showAddToast) {
+      toast.success("Product added to cart");
+      setShowAddToast(false);
+    }
+  }, [showAddToast]);
+
+  useEffect(() => {
+    if (showRemoveToast) {
+      toast.success("Product removed from cart");
+      setShowRemoveToast(false);
+    }
+  }, [showRemoveToast]);
+
   const handleAddProductToCart = useCallback((product: CartProductType) => {
     setCartProducts((prev) => {
       const updatedCart = prev ? [...prev, product] : [product];
-      toast.success("Product added to cart");
       localStorage.setItem("eShopCartItems", JSON.stringify(updatedCart));
+      setShowAddToast(true);
       return updatedCart;
     });
   }, []);
@@ -82,9 +85,9 @@ export const CartContextProvider = (props: Props) => {
     (product: CartProductType) => {
       setCartProducts((prev) => {
         if (!prev) return prev;
-        const updatedCart = prev.filter((item) => item.id != product.id);
-        toast.success("Product removed from cart");
+        const updatedCart = prev.filter((item) => item.id !== product.id);
         localStorage.setItem("eShopCartItems", JSON.stringify(updatedCart));
+        setShowRemoveToast(true);
         return updatedCart;
       });
     },
@@ -99,6 +102,7 @@ export const CartContextProvider = (props: Props) => {
           ? { ...item, quantity: item.quantity + 1 }
           : item
       );
+      localStorage.setItem("eShopCartItems", JSON.stringify(updatedCart));
       return updatedCart;
     });
   }, []);
@@ -111,6 +115,7 @@ export const CartContextProvider = (props: Props) => {
           ? { ...item, quantity: item.quantity - 1 }
           : item
       );
+      localStorage.setItem("eShopCartItems", JSON.stringify(updatedCart));
       return updatedCart;
     });
   }, []);
@@ -125,7 +130,7 @@ export const CartContextProvider = (props: Props) => {
     handleCartQtyDecrease,
   };
 
-  return <CartContext.Provider value={value} {...props} />;
+  return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
 };
 
 export const useCart = () => {
