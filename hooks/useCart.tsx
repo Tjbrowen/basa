@@ -17,6 +17,7 @@ type CartContextType = {
   handleRemoveProductFromCart: (product: CartProductType) => void;
   handleCartQtyIncrease: (product: CartProductType) => void;
   handleCartQtyDecrease: (product: CartProductType) => void;
+  handleClearCart: () => void;
 };
 
 // Create the CartContext with a default value
@@ -32,6 +33,10 @@ export const CartContextProvider = ({ children }: Props) => {
   const [cartProducts, setCartProducts] = useState<CartProductType[] | null>(
     null
   );
+
+  console.log("qty", cartTotalQty);
+  console.log("amount", cartTotalAmount);
+
   const [showAddToast, setShowAddToast] = useState(false);
   const [showRemoveToast, setShowRemoveToast] = useState(false);
 
@@ -72,6 +77,31 @@ export const CartContextProvider = ({ children }: Props) => {
     }
   }, [showRemoveToast]);
 
+  useEffect(() => {
+    const getTotals = () => {
+      if (cartProducts) {
+        const { total, qty } = cartProducts?.reduce(
+          (acc, item) => {
+            const itemTotal = item.price * item.quantity;
+
+            acc.total += itemTotal;
+            acc.qty += item.quantity;
+
+            return acc;
+          },
+          {
+            total: 0,
+            qty: 0,
+          }
+        );
+
+        setCartTotalQty(qty);
+        setCartTotalAmount(total);
+      }
+    };
+
+    getTotals();
+  }, [cartProducts]);
   const handleAddProductToCart = useCallback((product: CartProductType) => {
     setCartProducts((prev) => {
       const updatedCart = prev ? [...prev, product] : [product];
@@ -120,6 +150,12 @@ export const CartContextProvider = ({ children }: Props) => {
     });
   }, []);
 
+  const handleClearCart = useCallback(() => {
+    setCartProducts(null);
+    setCartTotalQty(0);
+    localStorage.setItem("eShopCartItems", JSON.stringify(null));
+  }, [cartProducts]);
+
   const value = {
     cartTotalQty,
     cartTotalAmount,
@@ -128,6 +164,7 @@ export const CartContextProvider = ({ children }: Props) => {
     handleRemoveProductFromCart,
     handleCartQtyIncrease,
     handleCartQtyDecrease,
+    handleClearCart,
   };
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
