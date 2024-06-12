@@ -33,9 +33,6 @@ export const CartContextProvider = (props: Props) => {
     null
   );
 
-  console.log("qty", cartTotalQty);
-  console.log("amount", cartTotalAmount);
-
   useEffect(() => {
     const cartItems = localStorage.getItem("eShopCartItems");
     if (cartItems) {
@@ -58,42 +55,25 @@ export const CartContextProvider = (props: Props) => {
   }, []);
 
   useEffect(() => {
-    const getTotals = () => {
-      if (cartProducts) {
-        const { totalQty, totalAmount } = cartProducts.reduce(
-          (acc, item) => {
-            const itemTotal = item.price * item.quantity;
-
-            acc.totalAmount += itemTotal;
-            acc.totalQty += item.quantity;
-
-            return acc;
-          },
-          {
-            totalAmount: 0,
-            totalQty: 0,
-          }
-        );
-        setCartTotalQty(totalQty);
-        setCartTotalAmount(totalAmount);
-      }
-    };
-
-    getTotals();
+    if (cartProducts) {
+      const totalQty = cartProducts.reduce(
+        (acc, product) => acc + product.quantity,
+        0
+      );
+      const totalAmount = cartProducts.reduce(
+        (acc, product) => acc + product.price * product.quantity,
+        0
+      );
+      setCartTotalQty(totalQty);
+      setCartTotalAmount(totalAmount);
+    }
   }, [cartProducts]);
 
   const handleAddProductToCart = useCallback((product: CartProductType) => {
     setCartProducts((prev) => {
-      let updatedCart;
-
-      if (prev) {
-        updatedCart = [...prev, product];
-      } else {
-        updatedCart = [product];
-      }
+      const updatedCart = prev ? [...prev, product] : [product];
       toast.success("Product added to cart");
       localStorage.setItem("eShopCartItems", JSON.stringify(updatedCart));
-
       return updatedCart;
     });
   }, []);
@@ -102,60 +82,38 @@ export const CartContextProvider = (props: Props) => {
     (product: CartProductType) => {
       setCartProducts((prev) => {
         if (!prev) return prev;
-
         const updatedCart = prev.filter((item) => item.id != product.id);
         toast.success("Product removed from cart");
         localStorage.setItem("eShopCartItems", JSON.stringify(updatedCart));
-
         return updatedCart;
       });
     },
     []
   );
 
-  const handleCartQtyIncrease = useCallback(
-    (product: CartProductType) => {
-      let updatedCart;
-      if (product.quantity === 99) {
-        return toast.error("Maximum reached");
-      }
-      if (cartProducts) {
-        updatedCart = [...cartProducts];
+  const handleCartQtyIncrease = useCallback((product: CartProductType) => {
+    setCartProducts((prev) => {
+      if (!prev) return prev;
+      const updatedCart = prev.map((item) =>
+        item.id === product.id && item.quantity < 99
+          ? { ...item, quantity: item.quantity + 1 }
+          : item
+      );
+      return updatedCart;
+    });
+  }, []);
 
-        const existingIndex = cartProducts.findIndex(
-          (item) => item.id === product.id
-        );
-        if (existingIndex > -1) {
-          updatedCart[existingIndex].quantity = ++updatedCart[existingIndex]
-            .quantity;
-        }
-        setCartProducts(updatedCart);
-      }
-    },
-    [cartProducts]
-  );
-
-  const handleCartQtyDecrease = useCallback(
-    (product: CartProductType) => {
-      let updatedCart;
-      if (product.quantity === 99) {
-        return toast.error("Maximum reached");
-      }
-      if (cartProducts) {
-        updatedCart = [...cartProducts];
-
-        const existingIndex = cartProducts.findIndex(
-          (item) => item.id === product.id
-        );
-        if (existingIndex > -1) {
-          updatedCart[existingIndex].quantity = --updatedCart[existingIndex]
-            .quantity;
-        }
-        setCartProducts(updatedCart);
-      }
-    },
-    [cartProducts]
-  );
+  const handleCartQtyDecrease = useCallback((product: CartProductType) => {
+    setCartProducts((prev) => {
+      if (!prev) return prev;
+      const updatedCart = prev.map((item) =>
+        item.id === product.id && item.quantity > 1
+          ? { ...item, quantity: item.quantity - 1 }
+          : item
+      );
+      return updatedCart;
+    });
+  }, []);
 
   const value = {
     cartTotalQty,
