@@ -34,9 +34,6 @@ export const CartContextProvider = ({ children }: Props) => {
     null
   );
 
-  console.log("qty", cartTotalQty);
-  console.log("amount", cartTotalAmount);
-
   const [showAddToast, setShowAddToast] = useState(false);
   const [showRemoveToast, setShowRemoveToast] = useState(false);
 
