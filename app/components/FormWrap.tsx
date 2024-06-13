@@ -12,7 +12,7 @@ const FormWrap = ({ children }: { children: React.ReactNode }) => {
         "
     >
       <div
-        className="max-w-[650]
+        className="max-w-[650px]
          w-full
          flex
          flex-col

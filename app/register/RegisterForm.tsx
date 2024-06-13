@@ -4,7 +4,15 @@ import { useState } from "react";
 import Heading from "../components/Heading";
 import Input from "../components/inputs/input";
 
-import { FieldValues, SubmitErrorHandler, useForm } from "react-hook-form";
+import {
+  FieldValues,
+  SubmitErrorHandler,
+  SubmitHandler,
+  useForm,
+} from "react-hook-form";
+import Button from "../components/Button";
+import Link from "next/link";
+import { AiOutlineGoogle } from "react-icons/ai";
 
 const RegisterForm = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -20,9 +28,20 @@ const RegisterForm = () => {
     },
   });
 
+  const onSubmit: SubmitHandler<FieldValues> = (data) => {
+    setIsLoading(true);
+    console.log(data);
+  };
+
   return (
     <>
       <Heading title="Sign up" />
+      <Button
+        outline
+        label="Sign up with Google"
+        icon={AiOutlineGoogle}
+        onClick={() => {}}
+      />
       <hr className="bg-slate-300 w-full h-px" />
       <Input
         id="name"
@@ -49,6 +68,16 @@ const RegisterForm = () => {
         required
         type="password"
       />
+      <Button
+        label={isLoading ? "Loading" : "Sign Up"}
+        onClick={handleSubmit(onSubmit)}
+      />
+      <p className="text-sm">
+        Already have an account?{" "}
+        <Link className="underline" href="/login">
+          Log in
+        </Link>
+      </p>
     </>
   );
 };
