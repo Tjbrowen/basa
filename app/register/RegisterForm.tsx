@@ -2,17 +2,14 @@
 
 import { useState } from "react";
 import Heading from "../components/Heading";
-import Input from "../components/inputs/input";
-
-import {
-  FieldValues,
-  SubmitErrorHandler,
-  SubmitHandler,
-  useForm,
-} from "react-hook-form";
+import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import Button from "../components/Button";
 import Link from "next/link";
 import { AiOutlineGoogle } from "react-icons/ai";
+import toast from "react-hot-toast";
+import { signIn } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import Input from "../components/inputs/Input";
 
 const RegisterForm = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -28,9 +25,43 @@ const RegisterForm = () => {
     },
   });
 
-  const onSubmit: SubmitHandler<FieldValues> = (data) => {
+  const router = useRouter();
+
+  const onSubmit: SubmitHandler<FieldValues> = async (data) => {
     setIsLoading(true);
-    console.log(data);
+    try {
+      const response = await fetch("/api/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+
+      if (!response.ok) {
+        throw new Error("Something went wrong");
+      }
+
+      toast.success("Account created");
+
+      const signInResponse = await signIn("credentials", {
+        email: data.email,
+        password: data.password,
+        redirect: false,
+      });
+
+      if (signInResponse?.ok) {
+        router.push("/cart");
+        router.refresh();
+        toast.success("Logged In");
+      } else if (signInResponse?.error) {
+        toast.error(signInResponse.error);
+      }
+    } catch (error) {
+      toast.error("Something went wrong");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (

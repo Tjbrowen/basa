@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Heading from "../components/Heading";
-import Input from "../components/inputs/input";
+import Input from "../components/inputs/Input";
 
 import {
   FieldValues,
