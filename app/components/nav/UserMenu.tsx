@@ -5,6 +5,7 @@ import Avatar from "../Avatar";
 import { AiFillCaretDown } from "react-icons/ai";
 import Link from "next/link";
 import MenuItem from "./MenuItem";
+import { signOut } from "next-auth/react";
 
 const UserMenu = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -51,9 +52,20 @@ const UserMenu = () => {
             "
           >
             <div>
-              <Link href="orders">
+              <Link href="/orders" style={{ color: "black" }}>
                 <MenuItem onClick={toggleOpen}>Your Orders</MenuItem>
               </Link>
+              <Link href="/admin" style={{ color: "black" }}>
+                <MenuItem onClick={toggleOpen}>Admin Dashboard</MenuItem>
+              </Link>
+              <MenuItem
+                onClick={() => {
+                  toggleOpen();
+                  signOut();
+                }}
+              >
+                Logout
+              </MenuItem>
             </div>
           </div>
         )}
