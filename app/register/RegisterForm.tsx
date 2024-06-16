@@ -10,6 +10,7 @@ import toast from "react-hot-toast";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Input from "../components/inputs/Input";
+import axios from "axios";
 
 const RegisterForm = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -29,41 +30,32 @@ const RegisterForm = () => {
 
   const onSubmit: SubmitHandler<FieldValues> = async (data) => {
     setIsLoading(true);
-    try {
-      const response = await fetch("/api/register", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
+
+    axios
+      .post("/api/register", data)
+      .then(() => {
+        toast.success("Account created");
+
+        signIn("credentials", {
+          email: data.email,
+          password: data.password,
+          redirect: false,
+        }).then((callback) => {
+          if (callback?.ok) {
+            router.push("/cart");
+            router.refresh();
+            toast.success("Logged In");
+          }
+          if (callback?.error) {
+            toast.error(callback.error);
+          }
+        });
+      })
+      .catch(() => toast.error("Something went wrong"))
+      .finally(() => {
+        setIsLoading(false);
       });
-
-      if (!response.ok) {
-        throw new Error("Something went wrong");
-      }
-
-      toast.success("Account created");
-
-      const signInResponse = await signIn("credentials", {
-        email: data.email,
-        password: data.password,
-        redirect: false,
-      });
-
-      if (signInResponse?.ok) {
-        router.push("/cart");
-        router.refresh();
-        toast.success("Logged In");
-      } else if (signInResponse?.error) {
-        toast.error(signInResponse.error);
-      }
-    } catch (error) {
-      toast.error("Something went wrong");
-    } finally {
-      setIsLoading(false);
-    }
   };
-
   return (
     <>
       <Heading title="Sign up" />
