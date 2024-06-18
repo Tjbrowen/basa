@@ -14,32 +14,34 @@ interface UserMenuProps {
   image: string | null | undefined;
 }
 
-const UserMenu: React.FC<UserMenuProps> = (currentUser, image) => {
+const UserMenu: React.FC<UserMenuProps> = ({ currentUser, image }) => {
   const [isOpen, setIsOpen] = useState(false);
+
   const toggleOpen = useCallback(() => {
     setIsOpen((prev) => !prev);
   }, []);
+
   return (
     <>
       <div className="relative z-30">
         <div
           onClick={toggleOpen}
           className="
-        p-2
-        border-[1px]
-        border-slate-400
-        flex
-        flex-row
-        items-center
-        gap-1
-        rounded-full
-        cursor-pointer
-        hover:shadow-md
-        transition
-        text-slate-700
-        "
+            p-2
+            border-[1px]
+            border-slate-400
+            flex
+            flex-row
+            items-center
+            gap-1
+            rounded-full
+            cursor-pointer
+            hover:shadow-md
+            transition
+            text-slate-700
+          "
         >
-          <Avatar src={image} />
+          <Avatar src={image || ""} />
           <AiFillCaretDown />
         </div>
         {isOpen && (
