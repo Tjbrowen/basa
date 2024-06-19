@@ -11,10 +11,9 @@ import { SafeUser } from "@/types";
 
 interface UserMenuProps {
   currentUser: SafeUser | null;
-  image: string | null | undefined;
 }
 
-const UserMenu: React.FC<UserMenuProps> = ({ currentUser, image }) => {
+const UserMenu: React.FC<UserMenuProps> = ({ currentUser }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const toggleOpen = useCallback(() => {
@@ -41,7 +40,7 @@ const UserMenu: React.FC<UserMenuProps> = ({ currentUser, image }) => {
             text-slate-700
           "
         >
-          <Avatar src={image || ""} />
+          <Avatar src={currentUser?.image} />
           <AiFillCaretDown />
         </div>
         {isOpen && (
