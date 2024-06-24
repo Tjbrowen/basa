@@ -46,7 +46,7 @@ export const CartContextProvider = ({ children }: Props) => {
     if (cartItems) {
       const parsedCartProducts: CartProductType[] = JSON.parse(cartItems);
       const bShopPaymentIntent: any =
-        localStorage.getItem("bShopPaymentIntent");
+        localStorage.getItem("eShopPaymentIntent");
       const paymentIntent: string | null = JSON.parse(bShopPaymentIntent);
 
       setCartProducts(parsedCartProducts);
@@ -165,7 +165,7 @@ export const CartContextProvider = ({ children }: Props) => {
   const handleSetPaymentIntent = useCallback(
     (val: string | null) => {
       setPaymentIntent(val);
-      localStorage.setItem("bShopPaymentItent", JSON.stringify(val));
+      localStorage.setItem("eShopPaymentItent", JSON.stringify(val));
     },
     [paymentIntent]
   );
