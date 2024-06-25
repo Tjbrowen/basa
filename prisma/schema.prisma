@@ -48,7 +48,7 @@ model Account {
   @@unique([provider, providerAccountId])
 }
 
-model Order{
+model Order {
   id              String          @id @default(auto()) @map("_id") @db.ObjectId
   userId          String          @db.ObjectId
   amount          Float
@@ -57,37 +57,40 @@ model Order{
   deliveryStatus  String?
   createDate      DateTime        @default(now())
   paymentIntentId String          @unique
-  products        CartProductType[]
-  adress          Address?
+  products        CartProduct[]
+  address         Address?
 
   user            User            @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
- type CartProductType {
-  id String
-  name String
+model CartProduct {
+  id       String          @id @default(auto()) @map("_id") @db.ObjectId
+  orderId  String          @db.ObjectId
+  name     String
   description String
   category String
-  brand String
+  brand    String
   selectedImg Image
   quantity Int
-  price Float
+  price    Float
+
+  order    Order            @relation(fields: [orderId], references: [id], onDelete: Cascade)
 }
 
-type Image{
-  color String
+type Image {
+  color     String
   colorCode String
-  image String
+  image     String
 }
 
-type Address{
-  city String
-  country String
-  line1 String
-  line2 String?
+type Address {
+  city        String
+  country     String
+  line1       String
+  line2       String?
   postal_code String
-  state String
+  state       String
 }
- 
+
 
  

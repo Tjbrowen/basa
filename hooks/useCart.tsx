@@ -45,9 +45,9 @@ export const CartContextProvider = ({ children }: Props) => {
     const cartItems = localStorage.getItem("eShopCartItems");
     if (cartItems) {
       const parsedCartProducts: CartProductType[] = JSON.parse(cartItems);
-      const bShopPaymentIntent: any =
+      const eShopPaymentIntent: any =
         localStorage.getItem("eShopPaymentIntent");
-      const paymentIntent: string | null = JSON.parse(bShopPaymentIntent);
+      const paymentIntent: string | null = JSON.parse(eShopPaymentIntent);
 
       setCartProducts(parsedCartProducts);
       setPaymentIntent(paymentIntent);

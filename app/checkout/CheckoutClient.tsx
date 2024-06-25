@@ -38,12 +38,8 @@ const CheckoutClient = () => {
           return res.json();
         })
         .then((data) => {
-          if (data.paymentIntent && data.paymentIntent.client_secret) {
-            setClientSecret(data.paymentIntent.client_secret);
-            handleSetPaymentIntent(data.paymentIntent.id);
-          } else {
-            throw new Error("Invalid payment intent response");
-          }
+          setClientSecret(data.paymentIntent.client_secret);
+          handleSetPaymentIntent(data.paymentIntent.id);
         })
         .catch((error) => {
           setError(true);

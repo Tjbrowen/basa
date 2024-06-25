@@ -21,7 +21,10 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <head>{/* Add metadata or other head elements here */}</head>
-      <body className={`${poppins.className} text-slate-700`}>
+      <body
+        className={`${poppins.className} text-slate-700`}
+        suppressHydrationWarning={true}
+      >
         <Toaster
           toastOptions={{
             style: {
