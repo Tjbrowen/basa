@@ -22,9 +22,6 @@ const CheckoutClient = () => {
 
   const router = useRouter();
 
-  console.log("paymentIntent", paymentIntent);
-  console.log("clientSecret", clientSecret);
-
   useEffect(() => {
     //create a paymentintent as soon as the page load
     if (cartProducts) {
