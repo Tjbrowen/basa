@@ -20,7 +20,24 @@ export default async function RootLayout({
 }) {
   return (
     <html lang="en">
-      <head>{/* Add metadata or other head elements here */}</head>
+      <head>
+        {/* Preload the font */}
+        <link
+          rel="preload"
+          href="/_next/static/css/app/layout.css?v=1719428021120"
+          as="style"
+        />
+        <link
+          rel="stylesheet"
+          href="/_next/static/css/app/layout.css?v=1719428021120"
+        />
+        <noscript>
+          <link
+            rel="stylesheet"
+            href="/_next/static/css/app/layout.css?v=1719428021120"
+          />
+        </noscript>
+      </head>
       <body
         className={`${poppins.className} text-slate-700`}
         suppressHydrationWarning={true}

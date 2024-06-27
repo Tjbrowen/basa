@@ -2,49 +2,47 @@ datasource db {
   provider = "mongodb"
   url      = env("DATABASE_URL")
 }
- 
+
 generator client {
   provider = "prisma-client-js"
 }
- 
+
 model User {
-  id            String          @id @default(auto()) @map("_id") @db.ObjectId
-  name          String?
-  email         String?         @unique
-  emailVerified DateTime?
-  image         String?
-  hashedPassword String?
-  accounts      Account[]
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  role Role @default(USER)
-  orders        Order[]
+  id              String      @id @default(auto()) @map("_id") @db.ObjectId
+  name            String?
+  email           String?     @unique
+  emailVerified   DateTime?
+  image           String?
+  hashedPassword  String?
+  accounts        Account[]
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+  role            Role        @default(USER)
+  orders          Order[]
 }
 
-enum Role{
-    USER
-    ADMIN
+enum Role {
+  USER
+  ADMIN
 }
- 
+
 model Account {
-  id                String  @id @default(auto()) @map("_id") @db.ObjectId
-  userId            String  @db.ObjectId
+  id                String      @id @default(auto()) @map("_id") @db.ObjectId
+  userId            String      @db.ObjectId
   type              String
   provider          String
   providerAccountId String
-  refresh_token     String? @db.String
-  access_token      String? @db.String
+  refresh_token     String?     @db.String
+  access_token      String?     @db.String
   expires_at        Int?
   token_type        String?
   scope             String?
-  id_token          String? @db.String
+  id_token          String?     @db.String
   session_state     String?
- 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
- 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
- 
+  createdAt         DateTime    @default(now())
+  updatedAt         DateTime    @updatedAt
+  user              User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+
   @@unique([provider, providerAccountId])
 }
 
@@ -58,32 +56,31 @@ model Order {
   createDate      DateTime        @default(now())
   paymentIntentId String          @unique
   products        CartProduct[]
-  address         Address?
-
+  declineReason   String?
   user            User            @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model CartProduct {
-  id       String          @id @default(auto()) @map("_id") @db.ObjectId
-  orderId  String          @db.ObjectId
-  name     String
-  description String
-  category String
-  brand    String
-  selectedImg Image
-  quantity Int
-  price    Float
-
-  order    Order            @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  id            String      @id @default(auto()) @map("_id") @db.ObjectId
+  orderId       String      @db.ObjectId
+  name          String
+  description   String
+  category      String
+  brand         String
+  quantity      Int
+  price         Float
+  order         Order       @relation(fields: [orderId], references: [id], onDelete: Cascade)
 }
 
-type Image {
+model Image {
+  id        String  @id @default(auto()) @map("_id") @db.ObjectId
   color     String
   colorCode String
   image     String
 }
 
-type Address {
+model Address {
+  id          String  @id @default(auto()) @map("_id") @db.ObjectId
   city        String
   country     String
   line1       String
@@ -91,6 +88,5 @@ type Address {
   postal_code String
   state       String
 }
-
 
  
